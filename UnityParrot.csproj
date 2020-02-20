@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net3.5</TargetFramework>
+    <DebugType>portable</DebugType>
+    <TargetName>UnityParrot</TargetName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="1.2.0.1" />
+
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\package\mu3_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+
+    <Reference Include="AMDaemon.NET">
+      <HintPath>..\package\mu3_Data\Managed\AMDaemon.NET.dll</HintPath>
+    </Reference>
+
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\package\mu3_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+
+    <Reference Include="UnityEngine">
+      <HintPath>..\package\mu3_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
