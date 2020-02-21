@@ -1,10 +1,15 @@
-﻿using MU3.Client;
+﻿using Harmony;
+using MU3.AM;
+using MU3.Client;
+using MU3.DataStudio;
+using MU3.DB;
 using MU3.User;
 using MU3.Util;
 using NekoClient.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -40,6 +45,7 @@ namespace UnityParrot.Components
             else
             {
                 query.response_ = GetUserDataResponse.create();
+                query.response_.userData.trophyId = GameDefaultID.TrophyID.getValue();
                 FileSystem.Configuration.SaveJson("UserData.json", query.response_);
             }
 
@@ -371,6 +377,20 @@ namespace UnityParrot.Components
             return false;
         }
 
+        static FileSystem userItemFS = new FileSystem("UnityParrot\\Configuration\\UserItem");
+
+        static FieldInfo userItemKind;
+
+        static ItemType UserItemKind(PacketGetUserItem instance)
+        {
+            if (userItemKind == null)
+            {
+                userItemKind = typeof(PacketGetUserItem).GetField("_itemKind", (BindingFlags)62);
+            }
+
+            return (ItemType)userItemKind.GetValue(instance);
+        }
+
         [MethodPatch(PatchType.Prefix, typeof(PacketGetUserItem), "proc")]
         private static bool PacketGetUserItemProc(ref Packet.State __result, PacketGetUserItem __instance)
         {
@@ -378,14 +398,16 @@ namespace UnityParrot.Components
 
             GetUserItem query = __instance.query as GetUserItem;
 
-            if (FileSystem.Configuration.FileExists("UserItem.json"))
+            string itemKind = UserItemKind(__instance).ToString();
+
+            if (userItemFS.FileExists($"{itemKind}.json"))
             {
-                query.response_ = FileSystem.Configuration.LoadJson<GetUserItemResponse>("UserItem.json");
+                query.response_ = userItemFS.LoadJson<GetUserItemResponse>($"{itemKind}.json");
             }
             else
             {
                 query.response_ = GetUserItemResponse.create();
-                FileSystem.Configuration.SaveJson("UserItem.json", query.response_);
+                userItemFS.SaveJson($"{itemKind}.json", query.response_);
             }
 
             query.response_.userId = Singleton<UserManager>.instance.UserId;
@@ -571,6 +593,109 @@ namespace UnityParrot.Components
             return false;
         }
 
+        [MethodPatch(PatchType.Transpiler, typeof(MU3.Scene_39_Logout), "Upsert_Init")]
+        private static IEnumerable<CodeInstruction> UpsertInitTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+
+            codes.RemoveRange(0, 10);
+
+            return codes.AsEnumerable();
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(PacketUpsertUserAll), "proc")]
+        private static bool PacketUpsertUserAllProc(ref Packet.State __result, PacketUpsertUserAll __instance)
+        {
+            Log.Info($"!!!!! SAVING !!!!!");
+
+            UpsertUserAll query = __instance.query as UpsertUserAll;
+
+            void UpdateItems(UserItem[] array)
+            {
+                void UpdateForType(ItemType itemType, string file)
+                {
+                    if (userItemFS.FileExists(file))
+                    {
+                        GetUserItemResponse temporary = userItemFS.LoadJson<GetUserItemResponse>(file);
+
+                        foreach (var item in array.Where(a => a.itemKind == (int)itemType))
+                        {
+                            // remove existing item and add new one
+                            temporary.userItemList = temporary.userItemList
+                                .Where(a => a.itemId != item.itemId)
+                                .Concat(new[] { item })
+                                .ToArray();
+                        }
+
+                        temporary.length = temporary.userItemList.Length;
+
+                        userItemFS.SaveJson(file, temporary);
+                    }
+                }
+
+                UpdateForType(ItemType.Trophy, "Trophy.json");
+                UpdateForType(ItemType.GachaTicket, "GachaTicket.json");
+                UpdateForType(ItemType.LimitBreakItem, "LimitBreakItem.json");
+                UpdateForType(ItemType.NamePlate, "NamePlate.json");
+                UpdateForType(ItemType.Present, "Present.json");
+                UpdateForType(ItemType.ProfileVoice, "ProfileVoice.json");
+            }
+
+            void UpdateUserData(UserData[] array)
+            {
+                if (FileSystem.Configuration.FileExists("UserData.json"))
+                {
+                    GetUserDataResponse temporary = FileSystem.Configuration.LoadJson<GetUserDataResponse>("UserData.json");
+
+                    temporary.userData = array[0];
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+                    temporary.bpRank = (int)UserUtil.calcBpRank(Singleton<UserManager>.instance.BattlePoint);
+
+                    FileSystem.Configuration.SaveJson("UserData.json", temporary);
+                }
+            }
+
+            void UpdateStory(MU3.Client.UserStory[] array)
+            {
+                if (FileSystem.Configuration.FileExists("UserStory.json"))
+                {
+                    GetUserStoryResponse temporary = FileSystem.Configuration.LoadJson<GetUserStoryResponse>("UserStory.json");
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userStoryList = temporary.userStoryList
+                            .Where(a => a.storyId != item.storyId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userStoryList.Length;
+
+                    FileSystem.Configuration.SaveJson("UserStory.json", temporary);
+                }
+            }
+
+            UpdateItems(query.request_.upsertUserAll.userItemList);
+            UpdateUserData(query.request_.upsertUserAll.userData);
+            UpdateStory(query.request_.upsertUserAll.userStoryList);
+
+            typeof(PacketUpsertUserAll).GetMethod("clearFlags", (BindingFlags)62).Invoke(__instance, null);
+
+            if (UserManager.Exists)
+            {
+                Singleton<UserManager>.instance.updateLastRemainedGP();
+            }
+
+            __result = Packet.State.Done;
+            (__instance.query as UpsertUserAll).response_ = new UpsertUserAllResponse()
+            {
+                returnCode = 1
+            };
+
+            return false;
+        }
+
         [MethodPatch(PatchType.Prefix, typeof(PacketGetUserPreview), "get_Response")]
         private static bool UserPreviewResponsePatch(ref GetUserPreviewResponse __result)
         {
@@ -596,7 +721,8 @@ namespace UnityParrot.Components
                 __result.lastRomVersion = Singleton<MU3.Sys.System>.instance.config.romVersionInfo.versionNo.versionString;
                 __result.lastDataVersion = Singleton<MU3.Sys.System>.instance.config.dataVersionInfo.versionNo.versionString;
                 __result.lastPlayDate = DateTime.Now.ToString();
-                
+                __result.trophyId = GameDefaultID.TrophyID.getValue();
+
                 FileSystem.Configuration.SaveJson("UserPrev.json", __result);
             }
 
