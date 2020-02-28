@@ -13,6 +13,8 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
+/* why are fuckin weebs so bad at game */
+/* sega y u do it like dis */
 namespace UnityParrot.Components
 {
     class PacketPatches : MonoBehaviour
@@ -610,6 +612,347 @@ namespace UnityParrot.Components
 
             UpsertUserAll query = __instance.query as UpsertUserAll;
 
+            void UpdateUserData(UserData[] array)
+            {
+                if (FileSystem.Configuration.FileExists("UserData.json"))
+                {
+                    GetUserDataResponse temporary = FileSystem.Configuration.LoadJson<GetUserDataResponse>("UserData.json");
+
+                    temporary.userData = array[0];
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+                    temporary.bpRank = (int)UserUtil.calcBpRank(Singleton<UserManager>.instance.BattlePoint);
+
+                    FileSystem.Configuration.SaveJson("UserData.json", temporary);
+                }
+            }
+
+            void UpdateUserOption(MU3.Client.UserOption[] array)
+            {
+                string fileName = "UserOption.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserOptionResponse temporary = FileSystem.Configuration.LoadJson<GetUserOptionResponse>(fileName);
+
+                    temporary.userOption = array[0];
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserActivity()
+            {
+                UserManager instance = Singleton<UserManager>.instance;
+
+                void UpdateForType(string fileName, List<MU3.User.UserActivity> array)
+                {
+                    if (FileSystem.Configuration.FileExists(fileName))
+                    {
+                        GetUserActivityResponse temporary = FileSystem.Configuration.LoadJson<GetUserActivityResponse>(fileName);
+
+                        foreach (var item in array)
+                        {
+                            MU3.Client.UserActivity item2 = new MU3.Client.UserActivity();
+                            item.copyTo(item2);
+                            
+                            temporary.userActivityList = new[] { item2 }
+                                .Concat(temporary.userActivityList)
+                                .ToArray();
+                        }
+
+                        temporary.length = temporary.userActivityList.Length;
+                        temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                        FileSystem.Configuration.SaveJson(fileName, temporary);
+                    }
+                }
+
+                UpdateForType("UserActivityMusic.json", instance.userActivityMusic);
+                UpdateForType("UserActivityPlay.json", instance.userActivityPlay);
+            }
+
+            void UpdateUserRecentRating(MU3.Client.UserRecentRating[] array)
+            {
+                string fileName = "UserRecentRating.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserRecentRatingResponse temporary = FileSystem.Configuration.LoadJson<GetUserRecentRatingResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        temporary.userRecentRatingList = new[] { item }
+                            .Concat(temporary.userRecentRatingList)
+                            .ToArray();
+                    }
+
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserBattleScore(MU3.Client.UserBpBase[] array)
+            {
+                string fileName = "UserBpBase.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserBpBaseResponse temporary = FileSystem.Configuration.LoadJson<GetUserBpBaseResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        temporary.userBpBaseList = new[] { item }
+                            .Concat(temporary.userBpBaseList)
+                            .ToArray();
+                    }
+
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserCharacter(MU3.Client.UserCharacter[] array)
+            {
+                string fileName = "UserCharacter.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserCharacterResponse temporary = FileSystem.Configuration.LoadJson<GetUserCharacterResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userCharacterList = temporary.userCharacterList
+                            .Where(a => a.characterId != item.characterId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userCharacterList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserCard(MU3.Client.UserCard[] array)
+            {
+                string fileName = "UserCard.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserCardResponse temporary = FileSystem.Configuration.LoadJson<GetUserCardResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userCardList = temporary.userCardList
+                            .Where(a => a.cardId != item.cardId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userCardList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserDeck(MU3.Client.UserDeck[] array)
+            {
+                string fileName = "UserDeck.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserDeckByKeyResponse temporary = FileSystem.Configuration.LoadJson<GetUserDeckByKeyResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userDeckList = temporary.userDeckList
+                            .Where(a => a.deckId != item.deckId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userDeckList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserTrainingRoom(MU3.Client.UserTrainingRoom[] array)
+            {
+                string fileName = "UserTrainingRoom.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserTrainingRoomByKeyResponse temporary = FileSystem.Configuration.LoadJson<GetUserTrainingRoomByKeyResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userTrainingRoomList = temporary.userTrainingRoomList
+                            .Where(a => a.roomId != item.roomId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userTrainingRoomList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserChapter(MU3.Client.UserChapter[] array)
+            {
+                string fileName = "UserChapter.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserChapterResponse temporary = FileSystem.Configuration.LoadJson<GetUserChapterResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userChapterList = temporary.userChapterList
+                            .Where(a => a.chapterId != item.chapterId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userChapterList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserMusicItem(MU3.Client.UserMusicItem[] array)
+            {
+                string fileName = "UserMusicItem.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserMusicItemResponse temporary = FileSystem.Configuration.LoadJson<GetUserMusicItemResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userMusicItemList = temporary.userMusicItemList
+                            .Where(a => a.musicId != item.musicId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userMusicItemList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserLoginBonus(MU3.Client.UserLoginBonus[] array)
+            {
+                string fileName = "UserLoginBonus.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserLoginBonusResponse temporary = FileSystem.Configuration.LoadJson<GetUserLoginBonusResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userLoginBonusList = temporary.userLoginBonusList
+                            .Where(a => a.bonusId != item.bonusId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userLoginBonusList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserEventPoint(MU3.Client.UserEventPoint[] array)
+            {
+                string fileName = "UserEventPoint.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserEventPointResponse temporary = FileSystem.Configuration.LoadJson<GetUserEventPointResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userEventPointList = temporary.userEventPointList
+                            .Where(a => a.eventId != item.eventId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userEventPointList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserMissionPoint(MU3.Client.UserMissionPoint[] array)
+            {
+                string fileName = "UserMissionPoint.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserMissionPointResponse temporary = FileSystem.Configuration.LoadJson<GetUserMissionPointResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userMissionPointList = temporary.userMissionPointList
+                            .Where(a => a.eventId != item.eventId)
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userMissionPointList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
+            void UpdateUserRatingLog(MU3.Client.UserRatinglog[] array)
+            {
+                string fileName = "UserRatingLog.json";
+
+                if (FileSystem.Configuration.FileExists(fileName))
+                {
+                    GetUserRatinglogResponse temporary = FileSystem.Configuration.LoadJson<GetUserRatinglogResponse>(fileName);
+
+                    foreach (var item in array)
+                    {
+                        // remove existing item and add new one
+                        temporary.userRatinglogList = temporary.userRatinglogList
+                            .Concat(new[] { item })
+                            .ToArray();
+                    }
+
+                    temporary.length = temporary.userRatinglogList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
+
+                    FileSystem.Configuration.SaveJson(fileName, temporary);
+                }
+            }
+
             void UpdateItems(UserItem[] array)
             {
                 void UpdateForType(ItemType itemType, string file)
@@ -628,6 +971,7 @@ namespace UnityParrot.Components
                         }
 
                         temporary.length = temporary.userItemList.Length;
+                        temporary.userId = Singleton<UserManager>.instance.UserId;
 
                         userItemFS.SaveJson(file, temporary);
                     }
@@ -639,20 +983,6 @@ namespace UnityParrot.Components
                 UpdateForType(ItemType.NamePlate, "NamePlate.json");
                 UpdateForType(ItemType.Present, "Present.json");
                 UpdateForType(ItemType.ProfileVoice, "ProfileVoice.json");
-            }
-
-            void UpdateUserData(UserData[] array)
-            {
-                if (FileSystem.Configuration.FileExists("UserData.json"))
-                {
-                    GetUserDataResponse temporary = FileSystem.Configuration.LoadJson<GetUserDataResponse>("UserData.json");
-
-                    temporary.userData = array[0];
-                    temporary.userId = Singleton<UserManager>.instance.UserId;
-                    temporary.bpRank = (int)UserUtil.calcBpRank(Singleton<UserManager>.instance.BattlePoint);
-
-                    FileSystem.Configuration.SaveJson("UserData.json", temporary);
-                }
             }
 
             void UpdateStory(MU3.Client.UserStory[] array)
@@ -671,14 +1001,33 @@ namespace UnityParrot.Components
                     }
 
                     temporary.length = temporary.userStoryList.Length;
+                    temporary.userId = Singleton<UserManager>.instance.UserId;
 
                     FileSystem.Configuration.SaveJson("UserStory.json", temporary);
                 }
             }
 
-            UpdateItems(query.request_.upsertUserAll.userItemList);
-            UpdateUserData(query.request_.upsertUserAll.userData);
-            UpdateStory(query.request_.upsertUserAll.userStoryList);
+            var upsert = query.request_.upsertUserAll;
+
+            UpdateUserData(upsert.userData);
+            UpdateUserOption(upsert.userOption);
+            UpdateUserActivity();
+            UpdateUserRecentRating(upsert.userRecentRatingList);
+            UpdateUserBattleScore(upsert.userBpBaseList);
+            // what the even does this do
+            //UpdateUserMusicDetail(upsert.userMusicDetailList);
+            UpdateUserCharacter(upsert.userCharacterList);
+            UpdateUserCard(upsert.userCardList);
+            UpdateUserDeck(upsert.userDeckList);
+            UpdateUserTrainingRoom(upsert.userTrainingRoomList);
+            if (upsert.isNewStoryList.Contains("1")) UpdateStory(upsert.userStoryList);
+            UpdateUserChapter(upsert.userChapterList);
+            if (upsert.isNewItemList.Contains("1")) UpdateItems(upsert.userItemList);
+            UpdateUserMusicItem(upsert.userMusicItemList);
+            UpdateUserLoginBonus(upsert.userLoginBonusList);
+            UpdateUserEventPoint(upsert.userEventPointList);
+            if (upsert.isNewMissionPointList.Contains("1")) UpdateUserMissionPoint(upsert.userMissionPointList);
+            UpdateUserRatingLog(upsert.userRatinglogList);
 
             typeof(PacketUpsertUserAll).GetMethod("clearFlags", (BindingFlags)62).Invoke(__instance, null);
 
