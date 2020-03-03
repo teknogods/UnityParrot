@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using MU3.Battle;
 using NekoClient.Logging;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace UnityParrot
 
                         HarmonyMethod harmonyMethod = GetPatch(m.Name, targetType);
 
-                        PerformPatch($"{targetType.Name} # {m.Name}",
+                        PerformPatch($"{targetType.Name} # {a.TargetMethod} ({m.Name})",
                             a.TargetType.GetMethod(a.TargetMethod, (BindingFlags)62),
                             a.PatchType == PatchType.Prefix ? harmonyMethod : null,
                             a.PatchType == PatchType.Postfix ? harmonyMethod : null,
@@ -77,8 +78,15 @@ namespace UnityParrot
 
             try
             {
-                ms_harmony.Patch(original, prefix, postfix, transpiler);
-                logMessage += "succeeded!";
+                if (original == null)
+                {
+                    logMessage += "failed! method does not exist!";
+                }
+                else
+                {
+                    ms_harmony.Patch(original, prefix, postfix, transpiler);
+                    logMessage += "succeeded!";
+                }
             }
             catch (Exception e)
             {
@@ -87,6 +95,44 @@ namespace UnityParrot
 
             Log.Info(logMessage);
         }
+
+
+        public static void MakeRET(Type targetType, string methodName, bool retVal = false)
+        {
+            var meth = targetType.GetMethod(methodName, (BindingFlags)62);
+            var ret = meth.ReturnType;
+
+            if (ret == typeof(void))
+            {
+                PerformPatch($"MakeRET {targetType.Name} # {methodName}", meth, GetPatch("DontContinue", typeof(Harmony)));
+            }
+            else if (ret == typeof(bool))
+            {
+                PerformPatch($"MakeRET {targetType.Name} # {methodName}", meth, GetPatch(retVal ? "ReturnTrue" : "ReturnFalse", typeof(Harmony)));
+            }
+            else
+            {
+                Log.Info($"MakeRET not supported for type: {ret.FullName}");
+            }
+        }
+
+        static bool ReturnFalse(ref bool __result)
+        {
+            __result = false;
+            return false;
+        }
+
+        static bool ReturnTrue(ref bool __result)
+        {
+            __result = true;
+            return false;
+        }
+
+        static bool DontContinue()
+        {
+            return false;
+        }
+
 
         static Harmony()
         {

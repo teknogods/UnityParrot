@@ -21,17 +21,28 @@ namespace UnityParrot
                 Log.Info("\n\n\nYAY");
 
                 GameObject mainObject = new GameObject();
-                mainObject.AddComponent<Components.SerialPatches>();
-                mainObject.AddComponent<Components.ControlPatches>();
-                mainObject.AddComponent<Components.SaveLoadPatches>();
+
+                /* save/load */
                 mainObject.AddComponent<Components.AimePatches>();
                 mainObject.AddComponent<Components.AimeUnitPatches>();
                 mainObject.AddComponent<Components.AimeResultPatches>();
                 mainObject.AddComponent<Components.AimeIdPatches>();
                 mainObject.AddComponent<Components.AccessCodePatches>();
                 mainObject.AddComponent<Components.PacketPatches>();
-                /*mainObject.AddComponent<Components.AMMAnagerPatches>();
-                mainObject.AddComponent<Components.BookkeepPatches>();*/
+
+                /* misc */
+                mainObject.AddComponent<Components.AMDaemonPatches>();
+                mainObject.AddComponent<Components.AMManagerPatches>();
+                mainObject.AddComponent<Components.BackupSettingPatches>();
+                mainObject.AddComponent<Components.BookkeepPatches>();
+                mainObject.AddComponent<Components.ControlPatches>();
+                mainObject.AddComponent<Components.CreditPatches>();
+                mainObject.AddComponent<Components.SequenceInitializePatches>();
+                mainObject.AddComponent<Components.SerialPatches>();
+                mainObject.AddComponent<Components.SysConfigPatches>();
+
+                Screen.fullScreen = false;
+
                 UnityEngine.Object.DontDestroyOnLoad(mainObject);
             }).Start();
         }
