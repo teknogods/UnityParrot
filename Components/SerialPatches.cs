@@ -1,15 +1,10 @@
 ﻿using AMDaemon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    class SerialPatches : MonoBehaviour
+    class SerialPatches
     {
-        void Start()
+        public static void Patch()
         {
             Harmony.PatchAllInType(typeof(SerialPatches));
         }

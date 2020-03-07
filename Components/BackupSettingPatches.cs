@@ -1,17 +1,12 @@
 ﻿using MU3.AM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class BackupSettingPatches : MonoBehaviour
+    public class BackupSettingPatches
     {
-        void Start()
+        public static void Patch()
         {
-            Harmony.MakeRET(typeof(BackupBookkeep), "get_isEventModeSettingAvailable", true);
+            Harmony.MakeRET(typeof(BackupSetting), "get_isEventModeSettingAvailable", true);
         }
     }
 }

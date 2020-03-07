@@ -80,7 +80,7 @@ namespace UnityParrot
             {
                 if (original == null)
                 {
-                    logMessage += "failed! method does not exist!";
+                    logMessage += "failed! method does not exist! \t\t\t!!!!!";
                 }
                 else
                 {
@@ -90,16 +90,26 @@ namespace UnityParrot
             }
             catch (Exception e)
             {
-                logMessage += $"failed! (Exception: {e.InnerException.Message})";
+                logMessage += $"failed! (Exception: {e.Message})";
             }
 
             Log.Info(logMessage);
         }
 
 
-        public static void MakeRET(Type targetType, string methodName, bool retVal = false)
+        public static void MakeRET(Type targetType, string methodName, bool retVal = false, Type[] methodTypes = null)
         {
-            var meth = targetType.GetMethod(methodName, (BindingFlags)62);
+            MethodInfo meth = default;
+
+            if (methodTypes != null)
+            {
+                meth = targetType.GetMethod(methodName, (BindingFlags)62, null, methodTypes, null);
+            }
+            else
+            {
+                meth = targetType.GetMethod(methodName, (BindingFlags)62);
+            }
+
             var ret = meth.ReturnType;
 
             if (ret == typeof(void))
@@ -115,6 +125,7 @@ namespace UnityParrot
                 Log.Info($"MakeRET not supported for type: {ret.FullName}");
             }
         }
+
 
         static bool ReturnFalse(ref bool __result)
         {

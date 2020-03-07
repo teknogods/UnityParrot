@@ -1,26 +1,20 @@
 ﻿using AMDaemon;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class AimeResultPatches : MonoBehaviour
+    public class AimeResultPatches
     {
-        void Start()
+        public static void Patch()
         {
-            // ALSO PATCH: AimeId.get_IsValid, 
+            Harmony.PatchAllInType(typeof(AimeResultPatches));
 
             Harmony.PerformPatch("AimeResult # .ctor",
                 typeof(AimeResult).GetConstructor((System.Reflection.BindingFlags)62, null, new Type[] { typeof(IntPtr) }, null),
-                prefix: Harmony.GetPatch("CtorPatch", typeof(AimeResultPatches)));
-
-            Harmony.PatchAllInType(typeof(AimeResultPatches));
+                prefix: Harmony.GetPatch("AimeResultCtorPatch", typeof(Main)));
         }
 
-        private static bool CtorPatch()
+        private static bool AimeResultCtorPatch()
         {
             NekoClient.Logging.Log.Info("AimeResult .ctor");
 

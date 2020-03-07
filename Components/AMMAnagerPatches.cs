@@ -1,16 +1,14 @@
 ﻿using Harmony;
 using MU3.AM;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class AMManagerPatches : MonoBehaviour
+    public class AMManagerPatches
     {
-        void Start()
+        public static void Patch()
         {
 			Harmony.PatchAllInType(typeof(AMManagerPatches));
         }

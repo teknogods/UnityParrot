@@ -1,15 +1,10 @@
 ﻿using MU3.AM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class CreditPatches : MonoBehaviour
+    public class CreditPatches
     {
-        void Start()
+        public static void Patch()
         {
             Harmony.PatchAllInType(typeof(CreditPatches));
             Harmony.MakeRET(typeof(Credit), "clearAimeLog");

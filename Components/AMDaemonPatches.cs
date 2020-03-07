@@ -1,17 +1,12 @@
 ﻿using AMDaemon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class AMDaemonPatches : MonoBehaviour
+    public class AMDaemonPatches
     {
-        void Start()
+        public static void Patch()
         {
-            Harmony.MakeRET(typeof(Error), "Set", false);
+            Harmony.MakeRET(typeof(Error), "Set", false, new System.Type[] { typeof(int), typeof(int) });
         }
     }
 }

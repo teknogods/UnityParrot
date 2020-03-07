@@ -7,18 +7,18 @@ using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class AimeUnitPatches : MonoBehaviour
+    public class AimeUnitPatches
     {
-        void Start()
+        public static void Patch()
         {
-            Harmony.PerformPatch("AimeUnit#.ctor",
-                typeof(AimeUnit).GetConstructor((System.Reflection.BindingFlags)62, null, new Type[] { typeof(IntPtr) }, null),
-                prefix: Harmony.GetPatch("CtorPatch", typeof(AimeUnitPatches)));
-
             Harmony.PatchAllInType(typeof(AimeUnitPatches));
+
+            Harmony.PerformPatch("AimeUnit#.ctor",
+               typeof(AimeUnit).GetConstructor((System.Reflection.BindingFlags)62, null, new Type[] { typeof(IntPtr) }, null),
+               prefix: Harmony.GetPatch("AimeUnitCtorPatch", typeof(Main)));
         }
 
-        private static bool CtorPatch()
+        private static bool AimeUnitCtorPatch()
         {
             NekoClient.Logging.Log.Info("AimeUnit .ctor");
             // don't continue

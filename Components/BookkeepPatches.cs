@@ -4,18 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using UnityEngine;
 
 namespace UnityParrot.Components
 {
-    public class BookkeepPatches : MonoBehaviour
+    public class BookkeepPatches
     {
-        void Start()
+        public static void Patch()
         {
             Harmony.PatchAllInType(typeof(BookkeepPatches));
             Harmony.MakeRET(typeof(BackupBookkeep), "updateCredit");
-            Harmony.MakeRET(typeof(BackupBookkeep), "updateRunningTime");
+            Harmony.MakeRET(typeof(BackupBookkeep), "updateRunningTime", methodTypes: new Type[] { });
         }
 
         [MethodPatch(PatchType.Transpiler, typeof(BackupBookkeep), "clearTotal")]

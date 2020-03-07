@@ -1,15 +1,12 @@
 ﻿using MU3;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+using MU3.Sys;
+using System.IO;
 
 namespace UnityParrot.Components
 {
-    public class SysConfigPatches : MonoBehaviour
+    public class SysConfigPatches
     {
-        void Start()
+        public static void Patch()
         {
             Harmony.PatchAllInType(typeof(SysConfigPatches));
 
@@ -67,6 +64,13 @@ namespace UnityParrot.Components
         static bool ClientId(ref string __result)
         {
             __result = "JEMOEDER";
+            return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(MU3.Sys.Path), "get_logPath")]
+        static bool LogPath(ref string __result)
+        {
+            __result = Directory.GetCurrentDirectory();
             return false;
         }
     }

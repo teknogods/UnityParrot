@@ -1,21 +1,10 @@
-﻿using MU3.Operation;
-using MU3.User;
-using MU3.Util;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using UnityEngine;
-using NekoClient.Logging;
-using MU3;
+﻿using MU3;
 
 namespace UnityParrot.Components
 {
-    public class ControlPatches : MonoBehaviour
+    public class ControlPatches
     {
-        void Start()
+        public static void Patch()
         { 
             Harmony.PatchAllInType(typeof(ControlPatches));
         }
