@@ -14,63 +14,83 @@ namespace UnityParrot.Components
         }
 
         [MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButton")]
-        private static bool IsButton(GameDeviceManager.GKey __0)
+        private static bool IsButton(ref bool __result, GameDeviceManager.GKey __0)
         {
             switch (__0)
             {
                 case GameDeviceManager.GKey.WestL:
-                    return Input.GetKeyDown(KeyCode.W);
+                    __result = Input.GetKeyDown(KeyCode.W);
+                    break;
                 case GameDeviceManager.GKey.WestC:
-                    return Input.GetKeyDown(KeyCode.E);
+                    __result = Input.GetKeyDown(KeyCode.E);
+                    break;
                 case GameDeviceManager.GKey.WestR:
-                    return Input.GetKeyDown(KeyCode.R);
+                    __result = Input.GetKeyDown(KeyCode.R);
+                    break;
                 case GameDeviceManager.GKey.EastL:
-                    return Input.GetKeyDown(KeyCode.S);
+                    __result = Input.GetKeyDown(KeyCode.S);
+                    break;
                 case GameDeviceManager.GKey.EastC:
-                    return Input.GetKeyDown(KeyCode.D);
+                    __result = Input.GetKeyDown(KeyCode.D);
+                    break;
                 case GameDeviceManager.GKey.EastR:
-                    return Input.GetKeyDown(KeyCode.F);
+                    __result = Input.GetKeyDown(KeyCode.F);
+                    break;
                 case GameDeviceManager.GKey.WestK:
-                    return Input.GetKeyDown(KeyCode.Q);
+                    __result = Input.GetKeyDown(KeyCode.Q);
+                    break;
                 case GameDeviceManager.GKey.EastK:
-                    return Input.GetKeyDown(KeyCode.T);
+                    __result = Input.GetKeyDown(KeyCode.T); 
+                    break;
                 case GameDeviceManager.GKey.WestM:
-                    return Input.GetKeyDown(KeyCode.LeftArrow);
+                    __result = Input.GetKeyDown(KeyCode.LeftArrow);
+                    break;
                 case GameDeviceManager.GKey.EastM:
-                    return Input.GetKeyDown(KeyCode.RightArrow);
+                    __result = Input.GetKeyDown(KeyCode.RightArrow);
+                    break;
             }
 
-            return true;
+            return __result ? false : true;
         }
 
         [MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButtonHold")]
-        private static bool IsButtonHold(GameDeviceManager.GKey __0)
+        private static bool IsButtonHold(ref bool __result, GameDeviceManager.GKey __0)
         {
             switch (__0)
             {
                 case GameDeviceManager.GKey.WestL:
-                    return Input.GetKey(KeyCode.W);
+                    __result = Input.GetKey(KeyCode.W);
+                    break;
                 case GameDeviceManager.GKey.WestC:
-                    return Input.GetKey(KeyCode.E);
+                    __result = Input.GetKey(KeyCode.E);
+                    break;
                 case GameDeviceManager.GKey.WestR:
-                    return Input.GetKey(KeyCode.R);
+                    __result = Input.GetKey(KeyCode.R);
+                    break;
                 case GameDeviceManager.GKey.EastL:
-                    return Input.GetKey(KeyCode.S);
+                    __result = Input.GetKey(KeyCode.S);
+                    break;
                 case GameDeviceManager.GKey.EastC:
-                    return Input.GetKey(KeyCode.D);
+                    __result = Input.GetKey(KeyCode.D);
+                    break;
                 case GameDeviceManager.GKey.EastR:
-                    return Input.GetKey(KeyCode.F);
+                    __result = Input.GetKey(KeyCode.F);
+                    break;
                 case GameDeviceManager.GKey.WestK:
-                    return Input.GetKey(KeyCode.Q);
+                    __result = Input.GetKey(KeyCode.Q);
+                    break;
                 case GameDeviceManager.GKey.EastK:
-                    return Input.GetKey(KeyCode.T);
+                    __result = Input.GetKey(KeyCode.T);
+                    break;
                 case GameDeviceManager.GKey.WestM:
-                    return Input.GetKey(KeyCode.LeftArrow);
+                    __result = Input.GetKey(KeyCode.LeftArrow);
+                    break;
                 case GameDeviceManager.GKey.EastM:
-                    return Input.GetKey(KeyCode.RightArrow);
+                    __result = Input.GetKey(KeyCode.RightArrow);
+                    break;
             }
 
-            return true;
+            return __result ? false : true;
         }
     }
 }
