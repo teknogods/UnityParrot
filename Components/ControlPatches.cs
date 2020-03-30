@@ -1,4 +1,6 @@
 ﻿using MU3;
+using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace UnityParrot.Components
@@ -11,9 +13,16 @@ namespace UnityParrot.Components
 
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardInput", true);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardDebug", true);
+
+            var gdm = typeof(GameDeviceManager);
+            var isButton = gdm.GetMethod("isButton", (BindingFlags)62, null, new Type[] { typeof(GameDeviceManager.GKey) }, null);
+            var isButtonHold = gdm.GetMethod("isButtonHold", (BindingFlags)62, null, new Type[] { typeof(GameDeviceManager.GKey) }, null);
+
+            Harmony.PerformPatch("ControlPatches # isButton", isButton, Harmony.GetPatch("IsButton", typeof(ControlPatches)));
+            Harmony.PerformPatch("ControlPatches # isButtonHold", isButtonHold, Harmony.GetPatch("IsButtonHold", typeof(ControlPatches)));
         }
 
-        [MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButton")]
+        //[MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButton")]
         private static bool IsButton(ref bool __result, GameDeviceManager.GKey __0)
         {
             switch (__0)
@@ -53,7 +62,7 @@ namespace UnityParrot.Components
             return __result ? false : true;
         }
 
-        [MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButtonHold")]
+        //[MethodPatch(PatchType.Prefix, typeof(GameDeviceManager), "isButtonHold")]
         private static bool IsButtonHold(ref bool __result, GameDeviceManager.GKey __0)
         {
             switch (__0)
