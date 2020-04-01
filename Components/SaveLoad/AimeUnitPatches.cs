@@ -21,7 +21,6 @@ namespace UnityParrot.Components
         private static bool AimeUnitCtorPatch()
         {
             NekoClient.Logging.Log.Info("AimeUnit .ctor");
-            // don't continue
             return false;
         }
 
@@ -29,7 +28,6 @@ namespace UnityParrot.Components
         private static bool AimeStart(AimeCommand __0, ref bool __result)
         {
             NekoClient.Logging.Log.Info($"AimeUnit Start: {__0.ToString()}");
-
             __result = true;
 
             return false;
@@ -59,7 +57,6 @@ namespace UnityParrot.Components
         private static bool GetHasConfirm(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeUnit HasConfirm");
-
             __result = true;
 
             return false;
@@ -69,7 +66,6 @@ namespace UnityParrot.Components
         private static bool GetHasError(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeUnit HasError");
-
             __result = false;
 
             return false;
@@ -79,7 +75,6 @@ namespace UnityParrot.Components
         private static bool GetHasResult(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeUnit HasResult");
-
             __result = true;
 
             return false;
@@ -129,7 +124,6 @@ namespace UnityParrot.Components
         private static bool GetResult(ref AimeResult __result)
         {
             NekoClient.Logging.Log.Info("AimeUnit Result");
-
             __result = (AimeResult)Activator.CreateInstance(typeof(AimeResult), (System.Reflection.BindingFlags)62, null, new object[] { IntPtr.Zero }, null);
 
             return false;

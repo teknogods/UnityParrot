@@ -1,4 +1,6 @@
 ﻿using MU3.AM;
+using MU3.DB;
+using System.Collections.Generic;
 
 namespace UnityParrot.Components
 {
@@ -17,19 +19,48 @@ namespace UnityParrot.Components
         }
 
         [MethodPatch(PatchType.Prefix, typeof(Credit), "get_addableCoin")]
-        static bool AddableCoin(ref int __result)
+        static bool addableCoin(ref int __result)
         {
             __result = 0;
             return false;
         }
 
         [MethodPatch(PatchType.Prefix, typeof(Credit), "get_coin")]
-        [MethodPatch(PatchType.Prefix, typeof(Credit), "get_CoinAmount")]
-        [MethodPatch(PatchType.Prefix, typeof(Credit), "get_credit")]
-        [MethodPatch(PatchType.Prefix, typeof(Credit), "toCoins")]
-        static bool Coin(ref int __result)
+        static bool coin(ref int __result)
         {
-            __result = 100;
+            __result = 10;
+            return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(Credit), "get_CoinAmount")]
+        static bool CoinAmount(ref int __result)
+        {
+            __result = 1;
+            return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(Credit), "get_credit")]
+        static bool credit(ref int __result)
+        {
+            __result = 10;
+            return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(Credit), "toCoins")]
+        static bool toCoins(ref int __result, int __0)
+        {
+            __result = __0;
+            return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(Credit), "getGpProductList")]
+        static bool getGpProductList(ref List<Product> __result)
+        {
+            __result = new List<Product>();
+            __result.Add(new Product(GpProductID.A_Credit1, GpProductID.A_Credit1));
+            __result.Add(new Product(GpProductID.A_Credit2, GpProductID.A_Credit2));
+            __result.Add(new Product(GpProductID.A_Credit3, GpProductID.A_Credit3));
+
             return false;
         }
     }

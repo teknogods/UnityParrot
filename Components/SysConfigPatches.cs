@@ -1,6 +1,7 @@
 ﻿using MU3;
 using MU3.Sys;
 using System.IO;
+using UnityEngine;
 
 namespace UnityParrot.Components
 {
@@ -13,7 +14,7 @@ namespace UnityParrot.Components
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isPlatformAlls", true);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isDummyJvs", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isNewButtonAssign", false);
-            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isRevertAnalog", false);
+            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isRevertAnalog", true);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isInvertWallButtonL", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isInvertWallButtonR", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isDummyCredit", false);
@@ -28,8 +29,8 @@ namespace UnityParrot.Components
             // get_serverUri
             // get_cameraType
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardInput", true);
-            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardCredit", true);
-            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardDebug", true);
+            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardCredit", false);
+            Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isKeyboardDebug", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isQuickStart", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isDispDelay", false);
             Harmony.MakeRET(typeof(MU3.Sys.Config), "get_isLoadNoteTap", true);
@@ -72,6 +73,13 @@ namespace UnityParrot.Components
         {
             __result = Directory.GetCurrentDirectory();
             return false;
+        }
+
+        [MethodPatch(PatchType.Prefix, typeof(MU3.SystemUI), "initialize")]
+        static bool initialize()
+        {
+            Screen.fullScreen = SettingsManager.instance.settings.DisplayFullscreen;
+            return true;
         }
     }
 }

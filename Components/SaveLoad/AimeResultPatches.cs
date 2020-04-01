@@ -17,7 +17,6 @@ namespace UnityParrot.Components
         private static bool AimeResultCtorPatch()
         {
             NekoClient.Logging.Log.Info("AimeResult .ctor");
-
             return false;
         }
 
@@ -25,7 +24,6 @@ namespace UnityParrot.Components
         private static bool GetAccessCode(ref AccessCode __result)
         {
             NekoClient.Logging.Log.Info("AimeResult AccessCode");
-
             __result = AccessCode.Zero;
 
             return false;
@@ -35,7 +33,6 @@ namespace UnityParrot.Components
         private static bool GetAimeId(ref AimeId __result)
         {
             NekoClient.Logging.Log.Info("AimeResult AimeId");
-
             __result = new AimeId(1337u);
 
             return false;
@@ -45,7 +42,6 @@ namespace UnityParrot.Components
         private static bool GetFirmVersion(ref string __result)
         {
             NekoClient.Logging.Log.Info("AimeResult FirmVersion");
-
             __result = "";
 
             return false;
@@ -55,7 +51,6 @@ namespace UnityParrot.Components
         private static bool GetHardVersion(ref string __result)
         {
             NekoClient.Logging.Log.Info("AimeResult HardVersion");
-
             __result = "";
 
             return false;
@@ -65,8 +60,7 @@ namespace UnityParrot.Components
         private static bool GetIsMobile(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeResult IsMobile");
-
-            __result = true;
+            __result = false;
 
             return false;
         }
@@ -75,7 +69,6 @@ namespace UnityParrot.Components
         private static bool GetIsReaderDetected(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeResult IsReaderDetected");
-
             __result = true;
 
             return false;
@@ -85,7 +78,6 @@ namespace UnityParrot.Components
         private static bool GetIsSegaIdRegistered(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeResult IsSegaIdRegistered");
-
             __result = false;
 
             return false;
@@ -95,7 +87,6 @@ namespace UnityParrot.Components
         private static bool GetIsValid(ref bool __result)
         {
             NekoClient.Logging.Log.Info("AimeResult IsValid");
-
             __result = true;
 
             return false;
@@ -105,7 +96,6 @@ namespace UnityParrot.Components
         private static bool GetAimeOfflineId(ref AimeOfflineId __result)
         {
             NekoClient.Logging.Log.Info("AimeResult OfflineId");
-
             __result = AimeOfflineId.Make(AccessCode.Zero);
 
             return false;
@@ -115,7 +105,6 @@ namespace UnityParrot.Components
         private static bool GetRelatedAimeIdCount(ref int __result)
         {
             NekoClient.Logging.Log.Info("AimeResult RelatedAimeIdCount");
-
             __result = 0;
 
             return false;
@@ -125,7 +114,6 @@ namespace UnityParrot.Components
         private static bool GetRelatedAimeIds(ref LazyCollection<AimeId> __result)
         {
             NekoClient.Logging.Log.Info("AimeResult RelatedAimeIds");
-
             __result = new LazyCollection<AimeId>(() =>
             {
                 return 0;
@@ -142,7 +130,6 @@ namespace UnityParrot.Components
         private static bool GetSegaIdAuthKey(ref string __result)
         {
             NekoClient.Logging.Log.Info("AimeResult SegaIdAuthKey");
-
             __result = "skeeter yeeter";
 
             return false;

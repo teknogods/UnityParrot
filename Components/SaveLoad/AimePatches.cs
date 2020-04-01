@@ -41,7 +41,7 @@ namespace UnityParrot.Components
 
         void Update()
         {
-            if (UnityEngine.Input.GetKey(KeyCode.F2))
+            if (UnityEngine.Input.GetKey(SettingsManager.instance.settings.AimeButton))
             {
                 shouldCoreBeReady = true;
             }
