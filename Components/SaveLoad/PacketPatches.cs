@@ -525,20 +525,9 @@ namespace UnityParrot.Components
             void UpdateUserRecentRating(MU3.Client.UserRecentRating[] array)
             {
                 string fileName = "UserRecentRating.json";
-                if (!FileSystem.Configuration.FileExists(fileName))
-                {
-                    GetUserRecentRatingResponse recentRating = GetUserRecentRatingResponse.create();
-                    FileSystem.Configuration.SaveJson(fileName, recentRating);
-                }
+                GetUserRecentRatingResponse temporary = new GetUserRecentRatingResponse();
 
-                GetUserRecentRatingResponse temporary = FileSystem.Configuration.LoadJson<GetUserRecentRatingResponse>(fileName);
-                foreach (var item in array)
-                {
-                    temporary.userRecentRatingList = new[] { item }
-                        .Concat(temporary.userRecentRatingList)
-                        .ToArray();
-                }
-
+                temporary.userRecentRatingList = array;
                 temporary.userId = Singleton<UserManager>.instance.UserId;
                 temporary.length = temporary.userRecentRatingList.Length;
                 FileSystem.Configuration.SaveJson(fileName, temporary);
@@ -696,8 +685,9 @@ namespace UnityParrot.Components
                 GetUserChapterResponse temporary = FileSystem.Configuration.LoadJson<GetUserChapterResponse>(fileName);
                 foreach (var item in array)
                 {
-                    temporary.userChapterList = new[] { item }
-                        .Concat(temporary.userChapterList)
+                    temporary.userChapterList = temporary.userChapterList
+                        .Where(a => a.chapterId != item.chapterId)
+                        .Concat(new[] { item })
                         .ToArray();
                 }
                 temporary.length = temporary.userChapterList.Length;

@@ -24,7 +24,6 @@ namespace UnityParrot
             Components.AMDaemonPatches.Patch();
             Components.AMManagerPatches.Patch();
             Components.BackupSettingPatches.Patch();
-            Components.BackupClosingTimePatches.Patch();
             Components.BookkeepPatches.Patch();
             Components.CreditPatches.Patch();
             Components.JvsPatches.Patch();
