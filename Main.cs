@@ -24,8 +24,8 @@ namespace UnityParrot
             Components.AMDaemonPatches.Patch();
             Components.AMManagerPatches.Patch();
             Components.BackupSettingPatches.Patch();
+            Components.BackupClosingTimePatches.Patch();
             Components.BookkeepPatches.Patch();
-            Components.ControlPatches.Patch();
             Components.CreditPatches.Patch();
             Components.JvsPatches.Patch();
             Components.SequenceInitializePatches.Patch();
@@ -48,12 +48,12 @@ namespace UnityParrot
 
                 GameObject mainObject = new GameObject();
 
+                mainObject.AddComponent<Components.SettingsManager>();
                 mainObject.AddComponent<Components.AimePatches>();
                 mainObject.AddComponent<Components.PacketPatches>();
 
                 UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
-                Screen.fullScreen = false;
             }).Start();
         }
     }
