@@ -457,7 +457,6 @@ namespace UnityParrot.Components
 
             UpsertUserAll query = __instance.query as UpsertUserAll;
 
-
             void UpdateUserData(UserData[] array)
             {
                 GetUserDataResponse temporary = new GetUserDataResponse();
@@ -501,22 +500,16 @@ namespace UnityParrot.Components
             {
                 void UpdateForType(string fileName, List<MU3.User.UserActivity> array, UserActivityConst.Kind kind)
                 {
-                    if (!FileSystem.Configuration.FileExists(fileName))
-                    {
-                        GetUserActivityResponse userActivityList = GetUserActivityResponse.create();
-                        FileSystem.Configuration.SaveJson(fileName, userActivityList);
-                    }
-
-                    GetUserActivityResponse temporary = FileSystem.Configuration.LoadJson<GetUserActivityResponse>(fileName);
+                    GetUserActivityResponse temporary = new GetUserActivityResponse();
+                    List<MU3.Client.UserActivity> userActivityList = new List<MU3.Client.UserActivity>();
                     foreach (var item in array)
                     {
                         MU3.Client.UserActivity activity = new MU3.Client.UserActivity();
                         item.copyTo(activity);
-                        temporary.userActivityList = new[] { activity }
-                            .Concat(temporary.userActivityList)
-                            .ToArray();
+                        userActivityList.Add(activity);
                     }
 
+                    temporary.userActivityList = userActivityList.ToArray();
                     temporary.length = temporary.userActivityList.Length;
                     temporary.userId = Singleton<UserManager>.instance.UserId;
                     temporary.kind = (int) kind;
@@ -526,7 +519,7 @@ namespace UnityParrot.Components
 
                 UserManager instance = Singleton<UserManager>.instance;
                 UpdateForType("UserActivityMusic.json", instance.userActivityMusic, UserActivityConst.Kind.Music);
-                UpdateForType("UserActivityPlay.json", instance.userActivityPlay, UserActivityConst.Kind.Music);
+                UpdateForType("UserActivityPlay.json", instance.userActivityPlay, UserActivityConst.Kind.PlayActivity);
             }
 
             void UpdateUserRecentRating(MU3.Client.UserRecentRating[] array)
@@ -913,6 +906,12 @@ namespace UnityParrot.Components
             }
 
 
+            if (query == null)
+            {
+                Log.Info("!!!!! No data to save. !!!!!");
+                return false;
+            }
+
             var upsert = query.request_.upsertUserAll;
 
             UpdateUserData(upsert.userData);
@@ -933,7 +932,6 @@ namespace UnityParrot.Components
             if (!string.IsNullOrEmpty(upsert.isNewEventPointList)) UpdateUserEventPoint(upsert.userEventPointList);
             if (!string.IsNullOrEmpty(upsert.isNewMissionPointList)) UpdateUserMissionPoint(upsert.userMissionPointList);
             if (!string.IsNullOrEmpty(upsert.isNewRatinglogList)) UpdateUserRatingLog(upsert.userRatinglogList);
-
             if (UserManager.Exists)
             {
                 Singleton<UserManager>.instance.updateLastRemainedGP();
