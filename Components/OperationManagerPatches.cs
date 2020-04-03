@@ -1,4 +1,5 @@
-﻿using MU3.Operation;
+﻿using MU3.Data;
+using MU3.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,19 @@ namespace UnityParrot.Components
         {
             __result = ClosingManager.CreditUseRestriction.None;
             return false;
+        }
+
+        public static bool patchUpdateGamePeriodOnce = true;
+        [MethodPatch(PatchType.Prefix, typeof(OperationManager), "updateGamePeriod")]
+        private static bool updateGamePeriod(ref OperationData ____downloadData)
+        {
+            if (patchUpdateGamePeriodOnce)
+            {
+                ____downloadData.isUpdate = true;
+                patchUpdateGamePeriodOnce = false;
+            }
+
+            return true;
         }
     }
 }
